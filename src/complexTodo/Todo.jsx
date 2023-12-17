@@ -1,69 +1,76 @@
 // Todo.jsx
 import React, { useState } from "react";
-import SingleTodo from "./SingleTodo";
-
 const Todo = () => {
-  const [todo, setTodo] = useState("");
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [time, setTime] = useState("");
+  const [data, setData] = useState({
+    todo: "",
+    name: "",
+    age: "",
+    time: "",
+  });
 
-  const [data, setData] = useState([]);
-  const [message, setMessage] = useState("");
+  const [todosList, setTodosList] = useState([]);
 
-  const removeTodo = (id) => {
-    let newTodos = data.filter((item) => {
-      return item.id !== id;
-    });
-    setData(newTodos);
-    setMessage("Todo removed successfully!");
-
-    setTimeout(() => {
-      setMessage("");
-    }, 1100);
-  };
+  const { todo, name, age, time } = data;
 
   const handleClick = (e) => {
     e.preventDefault();
-    const newTodo = { todo, name, age, time, id: Date.now() };
-    setData([...data, newTodo]);
-    setTodo(""); // Clear input field after adding todo
+    // Create a new todo object with the entered data
+    const newTodo = { todo, name, age, time };
+    // Add the new todo to the todosList
+    setTodosList([newTodo]);
+    // Reset input fields after adding todo
+    setData({
+      todo: "",
+      name: "",
+      age: "",
+      time: "",
+    });
   };
 
+  const handleChange = (e) => {
+    //
+    setData((prevValue) => ({
+      ...prevValue,
+      [e.target.name]: e.target.value,
+    }));
+  };
   return (
     <>
       <div className="container col-lg-5 mx-auto shadow p-4">
-        {message}
         <h1 className="display-4">TODOLIST</h1>
         <form>
           <label htmlFor="">Todo</label>
           <input
+            name="todo"
             value={todo}
-            onChange={(e) => setTodo(e.target.value)}
+            onChange={handleChange}
             className="form-control"
             type="text"
             placeholder="enter your todo..."
           />
           <label htmlFor="">Name</label>
           <input
+            name="name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={handleChange}
             className="form-control"
             type="text"
             placeholder="enter your name..."
           />
           <label htmlFor="">Age</label>
           <input
+            name="age"
             value={age}
-            onChange={(e) => setAge(e.target.value)}
+            onChange={handleChange}
             className="form-control"
             type="number"
             placeholder="enter your age..."
           />
           <label htmlFor="">Time</label>
           <input
+            name="time"
             value={time}
-            onChange={(e) => setTime(e.target.value)}
+            onChange={handleChange}
             className="form-control"
             type="time"
             placeholder="enter  time..."
@@ -73,15 +80,18 @@ const Todo = () => {
           </button>
         </form>
       </div>
-      <div className="container col-lg-9 row mx-auto my-4">
-        {data.map((item) => (
-          <SingleTodo
-            key={item.id}
-            id={item.id}
-            {...item}
-            remove={removeTodo}
-          />
-        ))}
+
+      <div className="mt-4">
+        <h2>Entered Todos:</h2>
+        <ul>
+          {todosList.map((todoItem, index) => (
+            <li key={index}>
+              <strong>Todo:</strong> {todoItem.todo}, <strong>Name:</strong>{" "}
+              {todoItem.name}, <strong>Age:</strong> {todoItem.age},{" "}
+              <strong>Time:</strong> {todoItem.time}
+            </li>
+          ))}
+        </ul>
       </div>
     </>
   );
